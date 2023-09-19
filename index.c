@@ -54,6 +54,15 @@ int dequeue(queue *q)
     }
 }
 
+void display(queue *q)
+{
+    for (int i = 0; i <= q->r; i++)
+    {
+        printf("%d\n", q->arr[i]);
+    }
+    printf("\n");
+}
+
 int main()
 {
     queue *q = (queue *)malloc(sizeof(queue));
@@ -72,5 +81,6 @@ int main()
     enqueue(q, 7);
     enqueue(q, 8);
     enqueue(q, 9);
+    display(q);
     return 0;
 }
