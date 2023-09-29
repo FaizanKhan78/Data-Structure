@@ -1,86 +1,92 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-typedef struct Queue
+typedef struct Node
 {
-    int size;
-    int f;
-    int r;
-    int *arr;
-} queue;
+    int data;
+    struct Node *left;
+    struct Node *right;
+} node;
 
-int isEmpty(queue *q)
+node *createTree()
 {
-    if (q->f == q->r)
-    {
-        return 1;
-    }
-    return 0;
-}
-
-int isFull(queue *q)
-{
-    if ((q->r + 1) % q->size == q->f)
-    {
-        return 1;
-    }
-    return 0;
-}
-
-void enqueue(queue *q, int data)
-{
-    if (isFull(q))
-    {
-        printf("Queue OverFlow \n");
-        printf("Cannot Insert %d\n", data);
-    }
-    else
-    {
-        printf("Enqueue %d\n", data);
-        q->r = (q->r + 1) % q->size;
-        q->arr[q->r] = data;
-    }
-}
-
-int dequeue(queue *q)
-{
-    if (isEmpty(q))
-    {
-        printf("Queue Empty\n");
-    }
-    else
-    {
-        return q->arr[++q->f];
-    }
-}
-
-void display(queue *q)
-{
-    for (int i = 0; i <= q->r; i++)
-    {
-        printf("%d\n", q->arr[i]);
-    }
+    int x;
+    node *newNode;
+    newNode = (node *)malloc(sizeof(node));
+    printf("Enter Data (-1 for No Node) :- ");
+    scanf("%d", &x);
     printf("\n");
+    if (x == -1)
+    {
+        return NULL;
+    }
+    newNode->data = x;
+    printf("Enter Left Child For %d\n", x);
+    newNode->left = createTree();
+    printf("Enter Right Child For %d\n", x);
+    newNode->right = createTree();
+    return newNode;
+}
+
+void preOrder(node *root)
+{
+    if (root != NULL)
+    {
+        printf("%d ", root->data);
+        preOrder(root->left);
+        preOrder(root->right);
+    }
+}
+
+void postOrder(node *root)
+{
+    if (root != NULL)
+    {
+        postOrder(root->left);
+        postOrder(root->right);
+        printf("%d ", root->data);
+    }
+}
+
+void inOrder(node *root)
+{
+    if (root != NULL)
+    {
+        postOrder(root->left);
+        printf("%d ", root->data);
+        postOrder(root->right);
+    }
+}
+
+int isBST(node *root)
+{
+    static node *prev = NULL;
+    if (root != NULL)
+    {
+        if (!isBST(root->left))
+        {
+            return 0;
+        }
+        if (prev != NULL && root->data <= prev->data)
+        {
+            return 0;
+        }
+        prev = root;
+        return isBST(root->right);
+    }
+    return 1;
 }
 
 int main()
 {
-    queue *q = (queue *)malloc(sizeof(queue));
-    q->f = q->r = 0;
-    q->size = 5;
-    q->arr = (int *)malloc(sizeof(int) * q->size);
-    enqueue(q, 1);
-    enqueue(q, 2);
-    enqueue(q, 3);
-    enqueue(q, 4);
-    printf("%d\n", dequeue(q));
-    printf("%d\n", dequeue(q));
-    printf("%d\n", dequeue(q));
-    printf("%d\n", dequeue(q));
-    enqueue(q, 6);
-    enqueue(q, 7);
-    enqueue(q, 8);
-    enqueue(q, 9);
-    display(q);
+    node *root = NULL;
+    root = createTree();
+    // preOrder(root);
+    // printf("\n");
+    // postOrder(root);
+    // printf("\n");
+    inOrder(root);
+    printf("\n");
+    printf("%d\n", isBST(root));
     return 0;
 }
